@@ -1,4 +1,11 @@
 import './globals.css';
+import { cookies } from 'next/headers';
+import LogoutButton from './components/LogoutButton';
+
+function decodeSession(cookie) {
+  if (!cookie) return null;
+  try { return JSON.parse(Buffer.from(cookie, 'base64').toString()); } catch { return null; }
+}
 
 export const metadata = {
   title: 'חנות - ריהוט ועיצוב',
@@ -6,6 +13,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const session = decodeSession(cookies().get('session')?.value);
+  
   return (
     <html lang="he" dir="rtl">
       <head>
@@ -19,7 +28,15 @@ export default function RootLayout({ children }) {
           <nav>
             <a href="/">החנות</a>
             <a href="/cart">העגלה</a>
-            <a href="/admin">ניהול</a>
+            {session?.role === 'admin' && <a href="/admin">ניהול</a>}
+            {session ? (
+              <>
+                <span style={{ color: '#a0a0a0', marginRight: '1rem' }}>{session.name}</span>
+                <LogoutButton />
+              </>
+            ) : (
+              <a href="/login">התחבר</a>
+            )}
           </nav>
         </header>
         <main>{children}</main>

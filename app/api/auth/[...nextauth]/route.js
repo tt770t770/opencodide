@@ -1,10 +1,10 @@
-const NextAuth = require('next-auth');
-const GitHubProvider = require('next-auth/providers/github');
-const users = require('../../../../lib/users');
+import NextAuth from 'next-auth';
+import GitHub from 'next-auth/providers/github';
+import users from '../../../../lib/users';
 
-module.exports = NextAuth({
+export default NextAuth({
   providers: [
-    GitHubProvider({
+    GitHub({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
     }),
